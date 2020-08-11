@@ -21,7 +21,7 @@ def SF_CONSUMER_KEY=env.SF_CONSUMER_KEY
     
      withCredentials([file(credentialsId: SERVER_KEY_CREDENTALS_ID, variable: 'server_key_file')]) {
        // -------------------------------------------------------------------------
-            // Authorize the Dev Hub org with JWT key and give it an alias. 
+            // Authorize the Dev Hub org with JWT key and give it an alias.
             // -------------------------------------------------------------------------
 
             stage('Authorize Org') {
