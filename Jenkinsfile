@@ -40,7 +40,7 @@ def SF_CONSUMER_KEY=env.SF_CONSUMER_KEY
             }
 			
 			stage('Deploy') {
-                rc = command "${toolbelt}/sfdx force:source:deploy --sourcepath ${DEFAULT_FOLDER_PATH} --targetusername ${SF_USERNAME} --testlevel RunLocalTests --wait 100"
+                rc = command "${toolbelt}/sfdx force:source:deploy --sourcepath ${DEFAULT_FOLDER_PATH} --targetusername ${SF_USERNAME} --wait 100"
                 if (rc != 0) {
                     error 'Deployment failed.'
                 }
