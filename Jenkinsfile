@@ -9,6 +9,7 @@ def SF_CONSUMER_KEY=env.SF_CONSUMER_KEY
     def TEST_LEVEL='RunLocalTests'
     
     def SF_INSTANCE_URL = env.SF_INSTANCE_URL ?: "https://login.salesforce.com"
+	def DEFAULT_FOLDER_PATH = "force-app/main/default"
     def toolbelt = tool 'toolbelt'
     
     // -------------------------------------------------------------------------
@@ -25,9 +26,23 @@ def SF_CONSUMER_KEY=env.SF_CONSUMER_KEY
             // -------------------------------------------------------------------------
 
             stage('Authorize Org') {
-                rc = command "${toolbelt}/sfdx force:auth:jwt:grant --instanceurl ${SF_INSTANCE_URL} --clientid ${SF_CONSUMER_KEY} --username ${SF_USERNAME} --jwtkeyfile ${server_key_file} --setdefaultdevhubusername --setalias HubOrg"
+                rc = command "${toolbelt}/sfdx force:auth:jwt:grant --instanceurl ${SF_INSTANCE_URL} --clientid ${SF_CONSUMER_KEY} --username ${SF_USERNAME} --jwtkeyfile ${server_key_file}"
                 if (rc != 0) {
                     error 'Salesforce Org authorization failed.'
+                }
+            }
+			
+            stage('Validate') {
+                rc = command "${toolbelt}/sfdx force:source:deploy --checkonly --sourcepath ${DEFAULT_FOLDER_PATH} --targetusername ${SF_USERNAME} --wait 100"
+                if (rc != 0) {
+                    error 'Validation failed.'
+                }
+            }
+			
+			stage('Deploy') {
+                rc = command "${toolbelt}/sfdx force:source:deploy --sourcepath ${DEFAULT_FOLDER_PATH} --targetusername ${SF_USERNAME} --testlevel RunLocalTests --wait 100"
+                if (rc != 0) {
+                    error 'Deployment failed.'
                 }
             }
      }
