@@ -26,7 +26,7 @@ def SF_CONSUMER_KEY=env.SF_CONSUMER_KEY
             // -------------------------------------------------------------------------
 
             stage('Authorize Org') {
-				command "${toolbelt}/sfdx force:auth:logout --targetusername ${SF_USERNAME}"
+				command "${toolbelt}/sfdx force:auth:logout --targetusername ${SF_USERNAME} -p"
                 rc = command "${toolbelt}/sfdx force:auth:jwt:grant --instanceurl ${SF_INSTANCE_URL} --clientid ${SF_CONSUMER_KEY} --username ${SF_USERNAME} --jwtkeyfile ${server_key_file}"
                 if (rc != 0) {
                     error 'Salesforce Org authorization failed.'
